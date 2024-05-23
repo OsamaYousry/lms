@@ -26,7 +26,7 @@ export const CoursesList: React.FC = () => {
 
   const formatSchedule = ({day, startTime, endTime}: { day: number, startTime: string, endTime: string }) => {
     const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    return (<>{`${days[day]} ${startTime} - ${endTime}`}<br/></>);
+    return (<span key={day}>{`${days[day]} ${startTime} - ${endTime}`}<br/></span>);
   }
 
   const handlePageChange = (_: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
