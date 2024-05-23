@@ -1,5 +1,5 @@
-import {Box, Button, Fab, FormHelperText, Select, TextField} from "@mui/material";
-import {FieldArray, FieldArrayRenderProps, Formik, useFormikContext} from "formik";
+import {Box, Button, CircularProgress, Fab, FormHelperText, Select, TextField} from "@mui/material";
+import {FieldArray, FieldArrayRenderProps, Formik} from "formik";
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import {CourseDTO, ScheduleDTO} from "@lms/data";
@@ -17,8 +17,7 @@ export const AddCourseForm: React.FC<AddCourseFormProps> = ({ onSuccess }) => {
     onSettled: () => {
       queryClient.invalidateQueries({
         queryKey: ['courses']
-      });
-      onSuccess();
+      }).then(() => onSuccess());
     }
   });
   const handleSubmit = (values: CourseDTO) => {
@@ -99,8 +98,8 @@ export const AddCourseForm: React.FC<AddCourseFormProps> = ({ onSuccess }) => {
                         </Box>
                       )}/>
 
-          <Button type="submit" variant="contained" color="primary" disabled={isSubmitting || !isValid || !dirty}>Add
-            Course</Button>
+          <Button type="submit" variant="contained" color="primary" disabled={isSubmitting || !isValid || !dirty}>
+            {mutation.isPending && <CircularProgress color="info" size={25} sx={{ marginRight: '0.5rem' }} />} Add Course</Button>
         </Box>
       )}
     </Formik>
