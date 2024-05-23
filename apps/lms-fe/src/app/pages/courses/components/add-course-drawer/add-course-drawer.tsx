@@ -8,7 +8,7 @@ interface AddCourseDrawerProps {
 export const AddCourseDrawer: React.FC<AddCourseDrawerProps> = ({ isOpen, onClose }) => {
   return (
     <Drawer anchor="right" open={isOpen} onClose={onClose}>
-      <Box width="400px" padding="1rem">
+      <Box width="500" padding="1rem">
         <Typography variant="h6">Add Course</Typography>
         <AddCourseForm />
       </Box>
