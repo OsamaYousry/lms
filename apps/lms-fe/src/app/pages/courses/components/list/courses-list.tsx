@@ -19,7 +19,8 @@ import Api from "../../apis/api";
 interface CoursesListProps {
   onEdit: (editObject: CourseDTO) => void;
 }
-export const CoursesList: React.FC<CoursesListProps> = ({ onEdit }) => {
+
+export const CoursesList: React.FC<CoursesListProps> = ({onEdit}) => {
   const [page, setPage] = useState(0);
   const queryClient = useQueryClient();
 
@@ -83,14 +84,17 @@ export const CoursesList: React.FC<CoursesListProps> = ({ onEdit }) => {
               <TableCell>{row.title}</TableCell>
               <TableCell>{row.description}</TableCell>
               <TableCell>{row.schedule.map(formatSchedule)}</TableCell>
-              <TableCell sx={{ gap: '0.5rem', display: 'flex' }}>
-                <Fab size="small" color="primary" onClick={handleEdit.bind(null, row)}><EditIcon /></Fab>
-                <Fab size="small" color="error" onClick={handleDelete.bind(null, row.title)}><DeleteIcon /></Fab></TableCell>
+              <TableCell sx={{gap: '0.5rem', display: 'flex'}}>
+                <Fab size="small" color="primary" onClick={handleEdit.bind(null, row)}><EditIcon/></Fab>
+                <Fab size="small" color="error"
+                     onClick={handleDelete.bind(null, row.title)}><DeleteIcon/></Fab></TableCell>
             </TableRow>
           ))
           }
-          {!isPending && data?.data?.length === 0 && <TableRow><TableCell colSpan={3}>No data</TableCell></TableRow>}
-          {isError && <TableRow><TableCell colSpan={3}>Error fetching data</TableCell></TableRow>}
+          {!isPending && data?.data?.length === 0 &&
+            <TableRow><TableCell colSpan={3} sx={{textAlign: 'center'}}>No data</TableCell></TableRow>}
+          {isError &&
+            <TableRow><TableCell colSpan={3} sx={{textAlign: 'center'}}>Error fetching data</TableCell></TableRow>}
         </TableBody>
         <TableFooter>
           <TableRow>
