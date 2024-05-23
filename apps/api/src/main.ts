@@ -82,6 +82,29 @@ app.get('/api/courses/:id', (req, res) => {
   }
 });
 
+app.post('/api/courses/:id/students', (req, res) => {
+  const course = req.params.id;
+  const student = req.body.student;
+  const students = courseStudents[course] || [];
+  students.push(student);
+  courseStudents[course] = students;
+  res.send(students);
+});
+
+app.delete('/api/courses/:id/students/:student', (req, res) => {
+  const course = req.params.id;
+  const student = req.params.student;
+  const students = courseStudents[course] || [];
+  const index = students.findIndex((s) => s === student);
+  if (index === -1) {
+    res.status(404).send('Student not found');
+  } else {
+    students.splice(index, 1);
+    courseStudents[course] = students;
+    res.send(students);
+  }
+});
+
 const port = process.env.PORT || 3333;
 const server = app.listen(port, () => {
   console.log(`Listening at http://localhost:${port}/api`);

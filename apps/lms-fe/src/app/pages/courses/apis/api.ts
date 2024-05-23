@@ -39,6 +39,24 @@ class API {
     const res = await fetch('/api/courses/' + title);
     return await res.json();
   }
+
+  async addStudent(course: string, student: string) {
+    const res = await fetch(`/api/courses/${course}/students`, {
+      method: 'POST',
+      body: JSON.stringify({student}),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    return await res.json();
+  }
+
+  async deleteStudent(course: string, student: string) {
+    const res = await fetch(`/api/courses/${course}/students/${student}`, {
+      method: 'DELETE'
+    });
+    return await res.text();
+  }
 }
 
 export default new API();
