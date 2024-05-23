@@ -1,10 +1,4 @@
-/**
- * This is not a production server yet!
- * This is only a minimal backend to get started.
- */
-
 import express from 'express';
-import * as path from 'path';
 import {CourseDTO, PaginatedDTO} from "@lms/data";
 
 const app = express();
@@ -26,14 +20,14 @@ const courses: CourseDTO[] = [
   ]}
 ];
 
-const paginatedCourse: PaginatedDTO<CourseDTO> = {
-  data: courses,
-  page: 0,
-  total: 3,
-  pageSize: 10
-};
-
 app.get('/api/courses', (req, res) => {
+  const page = req.query.page || 0;
+  const paginatedCourse: PaginatedDTO<CourseDTO> = {
+    data: courses,
+    page: parseInt(page as string, 10),
+    total: 20,
+    pageSize: 10
+  };
   res.send(paginatedCourse);
 });
 

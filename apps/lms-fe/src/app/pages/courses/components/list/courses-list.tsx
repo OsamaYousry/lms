@@ -29,6 +29,10 @@ export const CoursesList: React.FC = () => {
     return (<>{`${days[day]} ${startTime} - ${endTime}`}<br/></>);
   }
 
+  const handlePageChange = (_: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
+    setPage(newPage);
+  }
+
   const listSkeleton = Array.from({length: 5}).map((_, index) => (
     <TableRow key={index}>
       <TableCell><Skeleton variant="rectangular" width={210} height={20}/></TableCell>
@@ -62,8 +66,7 @@ export const CoursesList: React.FC = () => {
         <TableFooter>
           <TableRow>
             <TablePagination count={data?.total || 0} page={data?.page || 0} rowsPerPage={data?.pageSize || 10}
-                             onPageChange={() => {
-                             }}/>
+                             onPageChange={handlePageChange}/>
           </TableRow>
         </TableFooter>
       </Table>
