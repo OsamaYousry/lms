@@ -9,10 +9,12 @@ import Api from "../../apis/api";
 
 interface AddCourseFormProps {
   onSuccess: () => void;
+  editObject?: CourseDTO;
 }
-export const AddCourseForm: React.FC<AddCourseFormProps> = ({ onSuccess }) => {
+
+export const AddCourseForm: React.FC<AddCourseFormProps> = ({onSuccess, editObject}) => {
   const queryClient = useQueryClient();
-  const mutation = useMutation({
+  const addMutation = useMutation({
     mutationFn: (values: CourseDTO) => Api.addCourse(values),
     onSettled: () => {
       queryClient.invalidateQueries({
@@ -20,8 +22,22 @@ export const AddCourseForm: React.FC<AddCourseFormProps> = ({ onSuccess }) => {
       }).then(() => onSuccess());
     }
   });
+
+  const editMutation = useMutation({
+    mutationFn: (values: CourseDTO) => Api.editCourse(values),
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['courses']
+      }).then(() => onSuccess());
+    }
+  });
+
   const handleSubmit = (values: CourseDTO) => {
-    mutation.mutate(values);
+    if (editObject) {
+      editMutation.mutate(values);
+    } else {
+      addMutation.mutate(values);
+    }
   };
 
   const addSchedule = (arrayHelpers: FieldArrayRenderProps, schedule: ScheduleDTO[]) => {
@@ -37,6 +53,14 @@ export const AddCourseForm: React.FC<AddCourseFormProps> = ({ onSuccess }) => {
     arrayHelpers.remove(index);
   }
 
+  const initialValues = Object.assign({}, {
+    title: '', description: '', schedule: [{
+      day: 0,
+      startTime: '',
+      endTime: ''
+    }]
+  }, editObject);
+
   const showScheduleErrors = (errors: any, index: number) => {
     if (!errors || !errors.schedule || !errors.schedule[index]) return null;
 
@@ -45,13 +69,7 @@ export const AddCourseForm: React.FC<AddCourseFormProps> = ({ onSuccess }) => {
     ));
   }
   return (
-    <Formik initialValues={{
-      title: '', description: '', schedule: [{
-        day: 0,
-        startTime: '',
-        endTime: ''
-      }]
-    }} validationSchema={addCourseSchema} onSubmit={handleSubmit}>
+    <Formik initialValues={initialValues} validationSchema={addCourseSchema} onSubmit={handleSubmit}>
       {({values, handleChange, handleSubmit, handleBlur, isSubmitting, isValid, errors, dirty}) => (
         <Box component="form" onSubmit={handleSubmit} display="flex" flexDirection="column" gap="1.5rem"
              paddingTop="1.5rem">
@@ -99,7 +117,9 @@ export const AddCourseForm: React.FC<AddCourseFormProps> = ({ onSuccess }) => {
                       )}/>
 
           <Button type="submit" variant="contained" color="primary" disabled={isSubmitting || !isValid || !dirty}>
-            {mutation.isPending && <CircularProgress color="info" size={25} sx={{ marginRight: '0.5rem' }} />} Add Course</Button>
+            {(addMutation.isPending || editMutation.isPending) &&
+              <CircularProgress color="info" size={25} sx={{marginRight: '0.5rem'}}/>} {editObject ? 'Edit ' : 'Add '}
+            Course</Button>
         </Box>
       )}
     </Formik>

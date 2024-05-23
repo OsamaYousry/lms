@@ -13,9 +13,13 @@ import {keepPreviousData, useMutation, useQuery, useQueryClient} from "@tanstack
 import {useState} from "react";
 import {CourseDTO, PaginatedDTO} from "@lms/data";
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import Api from "../../apis/api";
 
-export const CoursesList: React.FC = () => {
+interface CoursesListProps {
+  onEdit: (editObject: CourseDTO) => void;
+}
+export const CoursesList: React.FC<CoursesListProps> = ({ onEdit }) => {
   const [page, setPage] = useState(0);
   const queryClient = useQueryClient();
 
@@ -30,6 +34,10 @@ export const CoursesList: React.FC = () => {
 
   const handleDelete = (name: string) => {
     mutation.mutate(name);
+  }
+
+  const handleEdit = (editObject: CourseDTO) => {
+    onEdit(editObject);
   }
 
 
@@ -75,7 +83,9 @@ export const CoursesList: React.FC = () => {
               <TableCell>{row.title}</TableCell>
               <TableCell>{row.description}</TableCell>
               <TableCell>{row.schedule.map(formatSchedule)}</TableCell>
-              <TableCell><Fab size="small" color="error" onClick={handleDelete.bind(null, row.title)}><DeleteIcon /></Fab></TableCell>
+              <TableCell sx={{ gap: '0.5rem', display: 'flex' }}>
+                <Fab size="small" color="primary" onClick={handleEdit.bind(null, row)}><EditIcon /></Fab>
+                <Fab size="small" color="error" onClick={handleDelete.bind(null, row.title)}><DeleteIcon /></Fab></TableCell>
             </TableRow>
           ))
           }

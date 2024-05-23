@@ -53,6 +53,19 @@ app.delete('/api/courses/:id', (req, res) => {
   }
 });
 
+app.put('/api/courses/:id', (req, res) => {
+  const course = req.body as CourseDTO;
+  addCourseSchema.validate(course, {abortEarly: false}).then(() => {
+    const index = courses.findIndex((c) => c.title === req.params.id);
+    if (index === -1) {
+      res.status(404).send('Course not found');
+    } else {
+      courses[index] = req.body;
+      res.send('Course updated');
+    }
+  });
+});
+
 const port = process.env.PORT || 3333;
 const server = app.listen(port, () => {
   console.log(`Listening at http://localhost:${port}/api`);

@@ -17,6 +17,17 @@ class API {
     return await res.json();
   }
 
+  async editCourse(course: CourseDTO) {
+    const res = await fetch('/api/courses/' + course.title, {
+      method: 'PUT',
+      body: JSON.stringify(course),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    return await res.json();
+  }
+
   async deleteCourse(name: string) {
     const res = await fetch('/api/courses/' + name, {
       method: 'DELETE'
