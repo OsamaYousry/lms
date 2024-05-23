@@ -5,7 +5,7 @@ import AddIcon from '@mui/icons-material/Add';
 import {CourseDTO, ScheduleDTO} from "@lms/data";
 import {addCourseSchema} from "@lms/data";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import Api from "../../apis/api";
+import Api from "../../../../apis/api";
 
 interface AddCourseFormProps {
   onSuccess: () => void;

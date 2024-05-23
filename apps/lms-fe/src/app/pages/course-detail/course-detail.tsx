@@ -1,6 +1,5 @@
 import {useParams} from "react-router-dom";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import api from "../courses/apis/api";
 import {CourseDTO} from "@lms/data";
 import {
   Card,
@@ -16,6 +15,7 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {useState} from "react";
+import api from "../../apis/api";
 
 export const CourseDetail: React.FC = () => {
   const {title} = useParams<{ title: string }>();

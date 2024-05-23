@@ -14,8 +14,8 @@ import {useState} from "react";
 import {CourseDTO, PaginatedDTO} from "@lms/data";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import Api from "../../apis/api";
 import {useNavigate} from "react-router-dom";
+import Api from "../../../../apis/api";
 
 interface CoursesListProps {
   onEdit: (editObject: CourseDTO) => void;
