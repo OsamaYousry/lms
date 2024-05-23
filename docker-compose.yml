@@ -1,0 +1,16 @@
+version: "3"
+services:
+  nginx-react:
+    container_name: lms-fe
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    links:
+      - "node:be"
+  node:
+    container_name: lms-be
+    build:
+      context: .
+      dockerfile: Backend.Dockerfile

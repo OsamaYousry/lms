@@ -2,7 +2,13 @@
   "name": "@lms/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "dev": "nx dev",
+    "build": "nx build",
+    "start": "nx serve",
+    "lint": "nx lint",
+    "test": "nx test"
+  },
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.4",
