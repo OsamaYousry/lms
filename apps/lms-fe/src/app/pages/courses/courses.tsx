@@ -20,8 +20,8 @@ export const Courses: React.FC = () => {
           Courses List
         </Typography>
         <Fab color="primary" variant="extended" onClick={handleAddCourse}><AddIcon/> Add Course</Fab>
-        <AddCourseDrawer isOpen={isAdding} onClose={() => setIsAdding(false)}/>
       </Box>
+      <AddCourseDrawer isOpen={isAdding} onClose={() => setIsAdding(false)}/>
       <CoursesList/>
     </Box>
   );
