@@ -5,7 +5,7 @@ import AddIcon from '@mui/icons-material/Add';
 import {CourseDTO, ScheduleDTO} from "@lms/data";
 import {addCourseSchema} from "@lms/data";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {addCourse} from "../../apis/addCourse";
+import Api from "../../apis/api";
 
 interface AddCourseFormProps {
   onSuccess: () => void;
@@ -13,7 +13,7 @@ interface AddCourseFormProps {
 export const AddCourseForm: React.FC<AddCourseFormProps> = ({ onSuccess }) => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationFn: (values: CourseDTO) => addCourse(values),
+    mutationFn: (values: CourseDTO) => Api.addCourse(values),
     onSettled: () => {
       queryClient.invalidateQueries({
         queryKey: ['courses']

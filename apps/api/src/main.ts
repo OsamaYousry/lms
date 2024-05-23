@@ -43,6 +43,16 @@ app.post('/api/courses', (req, res) => {
   });
 });
 
+app.delete('/api/courses/:id', (req, res) => {
+  const index = courses.findIndex((course) => course.title === req.params.id);
+  if (index === -1) {
+    res.status(404).send('Course not found');
+  } else {
+    courses.splice(index, 1);
+    res.send('Course deleted');
+  }
+});
+
 const port = process.env.PORT || 3333;
 const server = app.listen(port, () => {
   console.log(`Listening at http://localhost:${port}/api`);

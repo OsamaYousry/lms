@@ -7,20 +7,35 @@ import {
   TableCell,
   TableBody,
   TableFooter,
-  TablePagination, Skeleton
+  TablePagination, Skeleton, Fab
 } from "@mui/material";
-import {keepPreviousData, useQuery} from "@tanstack/react-query";
+import {keepPreviousData, useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {useState} from "react";
-import {fetchCourses} from "../../apis/fetchCourses";
 import {CourseDTO, PaginatedDTO} from "@lms/data";
+import DeleteIcon from '@mui/icons-material/Delete';
+import Api from "../../apis/api";
 
 export const CoursesList: React.FC = () => {
   const [page, setPage] = useState(0);
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: (name: string) => Api.deleteCourse(name),
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['courses']
+      });
+    }
+  });
+
+  const handleDelete = (name: string) => {
+    mutation.mutate(name);
+  }
 
 
   const {isPending, isError, data} = useQuery<PaginatedDTO<CourseDTO>>({
     queryKey: ['courses', page],
-    queryFn: () => fetchCourses(page),
+    queryFn: () => Api.fetchCourses(page),
     placeholderData: keepPreviousData
   });
 
@@ -38,6 +53,7 @@ export const CoursesList: React.FC = () => {
       <TableCell><Skeleton variant="rectangular" width={210} height={20}/></TableCell>
       <TableCell><Skeleton variant="rectangular" width={210} height={20}/></TableCell>
       <TableCell><Skeleton variant="rectangular" width={210} height={20}/></TableCell>
+      <TableCell><Skeleton variant="rectangular" width={210} height={20}/></TableCell>
     </TableRow>
   ));
 
@@ -49,6 +65,7 @@ export const CoursesList: React.FC = () => {
             <TableCell>Title</TableCell>
             <TableCell>Description</TableCell>
             <TableCell>Schedule</TableCell>
+            <TableCell></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -58,9 +75,11 @@ export const CoursesList: React.FC = () => {
               <TableCell>{row.title}</TableCell>
               <TableCell>{row.description}</TableCell>
               <TableCell>{row.schedule.map(formatSchedule)}</TableCell>
+              <TableCell><Fab size="small" color="error" onClick={handleDelete.bind(null, row.title)}><DeleteIcon /></Fab></TableCell>
             </TableRow>
           ))
           }
+          {!isPending && data?.data?.length === 0 && <TableRow><TableCell colSpan={3}>No data</TableCell></TableRow>}
           {isError && <TableRow><TableCell colSpan={3}>Error fetching data</TableCell></TableRow>}
         </TableBody>
         <TableFooter>
