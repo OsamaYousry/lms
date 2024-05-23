@@ -23,6 +23,12 @@ const courses: CourseDTO[] = [
   ]}
 ];
 
+const courseStudents: {[key: string]: string[]} = {
+  'Course 1': ['Student 1', 'Student 2'],
+  'Course 2': ['Student 3', 'Student 4'],
+  'Course 3': ['Student 5', 'Student 6'],
+};
+
 app.get('/api/courses', (req, res) => {
   const page = req.query.page || 0;
   const paginatedCourse: PaginatedDTO<CourseDTO> = {
@@ -64,6 +70,16 @@ app.put('/api/courses/:id', (req, res) => {
       res.send('Course updated');
     }
   });
+});
+
+app.get('/api/courses/:id', (req, res) => {
+  const course = courses.find((c) => c.title === req.params.id);
+  if (course) {
+    course.students = courseStudents[req.params.id] || [];
+    res.send(course);
+  } else {
+    res.status(404).send('Course not found');
+  }
 });
 
 const port = process.env.PORT || 3333;

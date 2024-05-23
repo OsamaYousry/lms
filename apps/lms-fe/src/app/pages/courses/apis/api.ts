@@ -34,6 +34,11 @@ class API {
     });
     return await res.text();
   }
+
+  async fetchCourse(title: string) {
+    const res = await fetch('/api/courses/' + title);
+    return await res.json();
+  }
 }
 
 export default new API();

@@ -11,9 +11,6 @@ export const LMSToolbar: React.FC = () => {
           <Typography variant="body1">
             <a href="/courses">Courses</a>
           </Typography>
-          <Typography variant="body1">
-            <a href="/students">Students</a>
-          </Typography>
         </Box>
       </Toolbar>
     </AppBar>

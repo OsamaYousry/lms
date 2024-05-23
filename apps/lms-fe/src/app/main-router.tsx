@@ -4,7 +4,7 @@ export const MainRouter = () => {
   return createBrowserRouter([
     {
       path: '/',
-      element: <Navigate to={'/courses'} />
+      element: <Navigate to={'/courses'}/>
     },
     {
       path: '/courses',
@@ -13,5 +13,12 @@ export const MainRouter = () => {
         return {Component: Courses};
       }
     },
+    {
+      path: '/courses/:title',
+      lazy: async () => {
+        const {CourseDetail} = await import('./pages/course-detail/course-detail');
+        return {Component: CourseDetail};
+      }
+    }
   ])
 }

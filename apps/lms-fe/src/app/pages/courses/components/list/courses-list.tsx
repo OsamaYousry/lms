@@ -15,6 +15,7 @@ import {CourseDTO, PaginatedDTO} from "@lms/data";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import Api from "../../apis/api";
+import {useNavigate} from "react-router-dom";
 
 interface CoursesListProps {
   onEdit: (editObject: CourseDTO) => void;
@@ -23,6 +24,7 @@ interface CoursesListProps {
 export const CoursesList: React.FC<CoursesListProps> = ({onEdit}) => {
   const [page, setPage] = useState(0);
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const mutation = useMutation({
     mutationFn: (name: string) => Api.deleteCourse(name),
@@ -33,11 +35,17 @@ export const CoursesList: React.FC<CoursesListProps> = ({onEdit}) => {
     }
   });
 
-  const handleDelete = (name: string) => {
+  const handleDelete = ($event: React.MouseEvent, name: string) => {
+    $event.stopPropagation();
     mutation.mutate(name);
   }
 
-  const handleEdit = (editObject: CourseDTO) => {
+  const handleRoute = (course: CourseDTO) => {
+    navigate(`/courses/${course.title}`);
+  }
+
+  const handleEdit = ($event: React.MouseEvent, editObject: CourseDTO) => {
+    $event.stopPropagation();
     onEdit(editObject);
   }
 
@@ -80,14 +88,14 @@ export const CoursesList: React.FC<CoursesListProps> = ({onEdit}) => {
         <TableBody>
           {isPending && listSkeleton}
           {!isPending && data?.data?.map((row) => (
-            <TableRow key={row.title}>
+            <TableRow key={row.title} onClick={handleRoute.bind(null, row)} sx={{ cursor: 'pointer' }}>
               <TableCell>{row.title}</TableCell>
               <TableCell>{row.description}</TableCell>
               <TableCell>{row.schedule.map(formatSchedule)}</TableCell>
               <TableCell sx={{gap: '0.5rem', display: 'flex'}}>
-                <Fab size="small" color="primary" onClick={handleEdit.bind(null, row)}><EditIcon/></Fab>
+                <Fab size="small" color="primary" onClick={($event) => handleEdit($event, row)}><EditIcon/></Fab>
                 <Fab size="small" color="error"
-                     onClick={handleDelete.bind(null, row.title)}><DeleteIcon/></Fab></TableCell>
+                     onClick={($event) => handleDelete($event, row.title)}><DeleteIcon/></Fab></TableCell>
             </TableRow>
           ))
           }
