@@ -9,16 +9,24 @@ import {
   TableFooter,
   TablePagination
 } from "@mui/material";
+import {keepPreviousData, useQuery, useQueryClient} from "@tanstack/react-query";
+import {useState} from "react";
 
 export const CoursesList: React.FC = () => {
-  const createData = (title: string, description: string, schedule: string) => {
-    return { title, description, schedule }
-  };
-  const rows = [
-    createData('Course 1', 'Description 1', 'Schedule 1'),
-    createData('Course 2', 'Description 2', 'Schedule 2'),
-    createData('Course 3', 'Description 3', 'Schedule 3'),
-  ];
+  const [page, setPage] = useState(0);
+
+  const fetchCourses = (page = 0) => fetch(`/api/courses?page=${page}`).then((res) => res.json());
+
+
+  const { isPending, isError, data, error, isFetching, isPlaceholderData } = useQuery<{
+    title: string;
+    description: string;
+    schedule: string
+  }[]>({
+    queryKey: ['courses', page],
+    queryFn: () => fetchCourses(page),
+    placeholderData: keepPreviousData
+  });
 
   return (
     <TableContainer component={Paper}>
@@ -32,7 +40,7 @@ export const CoursesList: React.FC = () => {
         </TableHead>
         <TableBody>
           {
-            rows.map((row) => (
+            data?.map((row) => (
               <TableRow key={row.title}>
                 <TableCell>{row.title}</TableCell>
                 <TableCell>{row.description}</TableCell>
@@ -43,7 +51,7 @@ export const CoursesList: React.FC = () => {
         </TableBody>
         <TableFooter>
           <TableRow>
-            <TablePagination count={rows.length} page={0} rowsPerPage={10} onPageChange={() => {}} />
+            <TablePagination count={data?.length || 0} page={0} rowsPerPage={10} onPageChange={() => {}} />
           </TableRow>
         </TableFooter>
       </Table>
