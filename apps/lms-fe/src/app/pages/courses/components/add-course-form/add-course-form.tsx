@@ -1,17 +1,28 @@
 import {Box, Button, Fab, FormHelperText, Select, TextField} from "@mui/material";
-import {FieldArray, FieldArrayRenderProps, Formik} from "formik";
+import {FieldArray, FieldArrayRenderProps, Formik, useFormikContext} from "formik";
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
-import {ScheduleDTO} from "@lms/data";
+import {CourseDTO, ScheduleDTO} from "@lms/data";
 import {addCourseSchema} from "@lms/data";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {addCourse} from "../../apis/addCourse";
 
-
-export const AddCourseForm: React.FC = () => {
-  const handleSubmit = (values: any, {setSubmitting}: { setSubmitting: (input: boolean) => void }) => {
-    console.log(values);
-    setTimeout(() => {
-      setSubmitting(false);
-    }, 1000);
+interface AddCourseFormProps {
+  onSuccess: () => void;
+}
+export const AddCourseForm: React.FC<AddCourseFormProps> = ({ onSuccess }) => {
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: (values: CourseDTO) => addCourse(values),
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['courses']
+      });
+      onSuccess();
+    }
+  });
+  const handleSubmit = (values: CourseDTO) => {
+    mutation.mutate(values);
   };
 
   const addSchedule = (arrayHelpers: FieldArrayRenderProps, schedule: ScheduleDTO[]) => {

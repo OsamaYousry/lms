@@ -1,7 +1,10 @@
 import express from 'express';
-import {CourseDTO, PaginatedDTO} from "@lms/data";
+import {addCourseSchema, CourseDTO, PaginatedDTO} from "@lms/data";
+const bodyParser = require('body-parser');
 
 const app = express();
+
+app.use(bodyParser.json());
 
 
 
@@ -29,6 +32,15 @@ app.get('/api/courses', (req, res) => {
     pageSize: 10
   };
   res.send(paginatedCourse);
+});
+
+app.post('/api/courses', (req, res) => {
+  addCourseSchema.validate(req.body, {abortEarly: false}).then(() => {
+    courses.push(req.body);
+    res.send(req.body);
+  }).catch((err) => {
+    res.status(400).send(err.errors);
+  });
 });
 
 const port = process.env.PORT || 3333;

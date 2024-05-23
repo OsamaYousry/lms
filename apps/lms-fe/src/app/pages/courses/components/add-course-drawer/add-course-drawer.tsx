@@ -10,7 +10,7 @@ export const AddCourseDrawer: React.FC<AddCourseDrawerProps> = ({ isOpen, onClos
     <Drawer anchor="right" open={isOpen} onClose={onClose}>
       <Box width="500" padding="1rem">
         <Typography variant="h6">Add Course</Typography>
-        <AddCourseForm />
+        <AddCourseForm onSuccess={onClose} />
       </Box>
     </Drawer>
   );

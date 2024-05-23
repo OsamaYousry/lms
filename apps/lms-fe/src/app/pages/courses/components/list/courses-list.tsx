@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import {keepPreviousData, useQuery} from "@tanstack/react-query";
 import {useState} from "react";
-import {useFetchCourses} from "../../hooks/useFetchCourses";
+import {fetchCourses} from "../../apis/fetchCourses";
 import {CourseDTO, PaginatedDTO} from "@lms/data";
 
 export const CoursesList: React.FC = () => {
@@ -20,7 +20,7 @@ export const CoursesList: React.FC = () => {
 
   const {isPending, isError, data} = useQuery<PaginatedDTO<CourseDTO>>({
     queryKey: ['courses', page],
-    queryFn: () => useFetchCourses(page),
+    queryFn: () => fetchCourses(page),
     placeholderData: keepPreviousData
   });
 
