@@ -1,9 +1,11 @@
 export interface CourseDTO {
   title: string;
   description: string;
-  schedule: {
-    day: number;
-    startTime: string;
-    endTime: string;
-  }
+  schedule: ScheduleDTO[]
+}
+
+export interface ScheduleDTO {
+  day: number;
+  startTime: string;
+  endTime: string;
 }

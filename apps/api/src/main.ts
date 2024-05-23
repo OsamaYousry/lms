@@ -12,9 +12,18 @@ const app = express();
 
 
 const courses: CourseDTO[] = [
-  {title: 'Course 1', description: 'Description 1', schedule: { day: 1, startTime: '10:00', endTime: '12:00' }},
-  {title: 'Course 2', description: 'Description 2', schedule: { day: 2, startTime: '10:00', endTime: '12:00' }},
-  {title: 'Course 3', description: 'Description 3', schedule: { day: 3, startTime: '10:00', endTime: '12:00' }},
+  {title: 'Course 1', description: 'Description 1', schedule: [
+    {day: 1, startTime: '09:00', endTime: '12:00'},
+    {day: 2, startTime: '09:00', endTime: '12:00'}
+  ]},
+  {title: 'Course 2', description: 'Description 2', schedule: [
+    {day: 3, startTime: '09:00', endTime: '12:00'},
+    {day: 4, startTime: '09:00', endTime: '12:00'}
+  ]},
+  {title: 'Course 3', description: 'Description 3', schedule: [
+    {day: 5, startTime: '09:00', endTime: '12:00'},
+    {day: 6, startTime: '09:00', endTime: '12:00'}
+  ]}
 ];
 
 const paginatedCourse: PaginatedDTO<CourseDTO> = {
