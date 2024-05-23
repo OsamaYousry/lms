@@ -5,23 +5,27 @@
 
 import express from 'express';
 import * as path from 'path';
+import {CourseDTO, PaginatedDTO} from "@lms/data";
 
 const app = express();
 
-type Course = {
-  title: string;
-  description: string;
-  schedule: string;
-};
 
-const courses: Course[] = [
-  {title: 'Course 1', description: 'Description 1', schedule: 'Schedule 1'},
-  {title: 'Course 2', description: 'Description 2', schedule: 'Schedule 2'},
-  {title: 'Course 3', description: 'Description 3', schedule: 'Schedule 3'},
+
+const courses: CourseDTO[] = [
+  {title: 'Course 1', description: 'Description 1', schedule: { day: 1, startTime: '10:00', endTime: '12:00' }},
+  {title: 'Course 2', description: 'Description 2', schedule: { day: 2, startTime: '10:00', endTime: '12:00' }},
+  {title: 'Course 3', description: 'Description 3', schedule: { day: 3, startTime: '10:00', endTime: '12:00' }},
 ];
 
+const paginatedCourse: PaginatedDTO<CourseDTO> = {
+  data: courses,
+  page: 0,
+  total: 3,
+  pageSize: 10
+};
+
 app.get('/api/courses', (req, res) => {
-  res.send(courses);
+  res.send(paginatedCourse);
 });
 
 const port = process.env.PORT || 3333;
