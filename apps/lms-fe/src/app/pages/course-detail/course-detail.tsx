@@ -20,7 +20,7 @@ import api from "../../apis/api";
 export const CourseDetail: React.FC = () => {
   const {title} = useParams<{ title: string }>();
   const [studentName, setStudentName] = useState<string>('');
-  const {isPending, data} = useQuery<CourseDTO>({
+  const {isPending, data, isError} = useQuery<CourseDTO>({
     queryKey: ['course', title],
     queryFn: () => api.fetchCourse(title!)
   });
@@ -50,6 +50,7 @@ export const CourseDetail: React.FC = () => {
   return (
     <>
       {isPending && <CircularProgress sx={{display: 'block', margin: 'auto'}}/>}
+      {isError && <Typography variant="h5" align="center">Error fetching course</Typography>}
       {data && (
         <Card sx={{maxWidth: '500px', display: 'block', margin: 'auto'}}>
           <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
@@ -61,7 +62,7 @@ export const CourseDetail: React.FC = () => {
               {data.students?.map((student, index) => (
                 <ListItem key={index}
                           sx={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>{student}
-                  <DeleteIcon sx={{cursor: 'pointer'}} onClick={() => {
+                  <DeleteIcon data-testid={`delete-button-${index}`} sx={{cursor: 'pointer'}} onClick={() => {
                     deleteStudentMutation.mutate(student)
                   }}/>
                 </ListItem>
@@ -72,7 +73,7 @@ export const CourseDetail: React.FC = () => {
                 setStudentName(e.target.value)
               }}
               />
-              <AddIcon sx={{cursor: 'pointer'}} onClick={() => {
+              <AddIcon data-testid="add-button" sx={{cursor: 'pointer'}} onClick={() => {
                 addStudentMutation.mutate(studentName)
               }}/>
             </Box>
