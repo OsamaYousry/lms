@@ -1,11 +1,10 @@
-import {Box, Button, CircularProgress, Fab, FormHelperText, Select, TextField} from "@mui/material";
-import {FieldArray, FieldArrayRenderProps, Formik} from "formik";
-import DeleteIcon from '@mui/icons-material/Delete';
-import AddIcon from '@mui/icons-material/Add';
-import {CourseDTO, ScheduleDTO} from "@lms/data";
+import {Box, Button, CircularProgress, TextField} from "@mui/material";
+import {FieldArray, Formik} from "formik";
+import {CourseDTO} from "@lms/data";
 import {addCourseSchema} from "@lms/data";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import Api from "../../../../apis/api";
+import {ScheduleForm} from "./schedule-form";
 
 interface AddCourseFormProps {
   onSuccess: () => void;
@@ -40,18 +39,6 @@ export const AddCourseForm: React.FC<AddCourseFormProps> = ({onSuccess, editObje
     }
   };
 
-  const addSchedule = (arrayHelpers: FieldArrayRenderProps, schedule: ScheduleDTO[]) => {
-    arrayHelpers.insert(schedule.length, {
-      day: 0,
-      startTime: '',
-      endTime: ''
-    });
-  }
-
-  const removeSchedule = (arrayHelpers: FieldArrayRenderProps, index: number, schedule: ScheduleDTO[]) => {
-    if (schedule.length === 1) return;
-    arrayHelpers.remove(index);
-  }
 
   const initialValues = Object.assign({}, {
     title: '', description: '', schedule: [{
@@ -61,13 +48,7 @@ export const AddCourseForm: React.FC<AddCourseFormProps> = ({onSuccess, editObje
     }]
   }, editObject);
 
-  const showScheduleErrors = (errors: any, index: number) => {
-    if (!errors || !errors.schedule || !errors.schedule[index]) return null;
 
-    return Object.keys(errors.schedule[index]).map((key) => (
-      <FormHelperText key={key} error>{errors.schedule[index][key]}</FormHelperText>
-    ));
-  }
   return (
     <Formik initialValues={initialValues} validationSchema={addCourseSchema} onSubmit={handleSubmit}>
       {({values, handleChange, handleSubmit, handleBlur, isSubmitting, isValid, errors, dirty}) => (
@@ -78,43 +59,7 @@ export const AddCourseForm: React.FC<AddCourseFormProps> = ({onSuccess, editObje
           <TextField label="Description" name="description" value={values.description} onChange={handleChange}
                      onBlur={handleBlur} error={errors.description !== undefined} helperText={errors.description}/>
           <FieldArray name={'schedule'}
-                      render={arrayHelpers => (
-                        <Box display="flex" flexDirection="column" gap="1.5rem">{
-                          values.schedule.map((schedule: ScheduleDTO, index: number) => (
-                            <div key={index}>
-                              <Box display="flex" flexDirection="row" gap="0.5rem">
-                                <Select name={`schedule.${index}.day`} defaultValue={schedule.day}
-                                        native
-                                        onChange={handleChange}>
-                                  <option value={0}>Sun</option>
-                                  <option value={1}>Mon</option>
-                                  <option value={2}>Tue</option>
-                                  <option value={3}>Wed</option>
-                                  <option value={4}>Thu</option>
-                                  <option value={5}>Fri</option>
-                                  <option value={6}>Sat</option>
-                                </Select>
-                                <TextField name={`schedule.${index}.startTime`} value={schedule.startTime}
-                                           type="time"
-                                           onBlur={handleBlur}
-                                           onChange={handleChange}
-                                />
-                                <TextField name={`schedule.${index}.endTime`} value={schedule.endTime}
-                                           type="time"
-                                           onBlur={handleBlur}
-                                           onChange={handleChange}/>
-                                <Fab color="error"
-                                     onClick={removeSchedule.bind(null, arrayHelpers, index, values.schedule)}><DeleteIcon/></Fab>
-                              </Box>
-                              {showScheduleErrors(errors, index)}
-                            </div>
-                          ))
-                        }
-                          <Button variant="contained" color="secondary"
-                                  onClick={addSchedule.bind(null, arrayHelpers, values.schedule)}
-                                  disabled={values.schedule.length === 7}><AddIcon/> Add Schedule</Button>
-                        </Box>
-                      )}/>
+                      render={(arrayHelpers) => (<ScheduleForm arrayHelpers={arrayHelpers}/>)}/>
 
           <Button type="submit" variant="contained" color="primary" disabled={isSubmitting || !isValid || !dirty}>
             {(addMutation.isPending || editMutation.isPending) &&
